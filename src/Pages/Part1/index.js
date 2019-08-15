@@ -6,7 +6,7 @@ const panelSize = {
   h: 1
 };
 
-const Day1 = () => {
+const Part1 = () => {
   const [l, setL] = useState(100);
   const [nodes, setNodes] = useState([]);
   const [testPanel, setTestPanel] = useState(1);
@@ -47,4 +47,4 @@ const Day1 = () => {
   );
 };
 
-export default Day1;
+export default Part1;

@@ -1,15 +1,18 @@
 import React from "react";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
-import Day1 from "./Pages/Day1";
+import "antd/dist/antd.css";
+import Part1 from "./Pages/Part1";
+import Part2 from "./Pages/Part2";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="App">
         <Switch>
-          <Route path="/day1" render={() => <Day1 />} />
-          <Route render={() => <Redirect to={"/day1"} />} />
+          <Route exact path="/" render={() => <Part2 />} />
+          <Route path="/part1" render={() => <Part1 />} />
+          <Route render={() => <Redirect to={"/"} />} />
         </Switch>
       </div>
     </BrowserRouter>
