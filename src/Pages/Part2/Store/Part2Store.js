@@ -40,13 +40,21 @@ export default class Part2Store extends Container {
   linkedStores = {};
 
   init = async () => {
-    await this.computeLambdaByL();
+    console.log("init called");
+    const { w, rao, wSteps } = this.state;
 
-    await this.computeLambda();
+    console.log({ w, rao, wSteps });
+    if (!w.length || !rao.length || !wSteps.length) {
+      return;
+    }
 
-    await this.computeTimePeriod();
+    // await this.computeLambdaByL();
 
-    await this.computeW();
+    // await this.computeLambda();
+
+    // await this.computeTimePeriod();
+
+    // await this.computeW();
 
     await this.computeWSteps();
 
@@ -120,7 +128,7 @@ export default class Part2Store extends Container {
   computeWSteps = async () => {
     const {
       config: {
-        w: { min: start, max, stepSize },
+        // w: { min: start, max, stepSize },
         Fn,
         L,
         g,
@@ -146,16 +154,17 @@ export default class Part2Store extends Container {
     const cosB = Math.cos((b * Math.PI) / 180);
     const v = Fn * Math.sqrt(g * L);
 
-    const weSteps = wSteps.map(value => 1 - (value * 2 * v * cosB) / g);
+    const weSteps = wSteps.map(
+      value => value - (Math.pow(value, 2) * v * cosB) / g
+    );
 
     await this.setState({ wSteps, weSteps });
   };
 
   computeSW = async () => {
     const {
-      config: { t1, h1By3 },
-      wSteps,
-      weSteps
+      config: { t1, h1By3, Fn, b, L, g },
+      wSteps
     } = this.state;
 
     const sw = wSteps.map(value => {
@@ -167,9 +176,24 @@ export default class Part2Store extends Container {
       );
     });
 
-    const sew = sw.map((value, index) => value / weSteps[index]);
+    const cosB = Math.cos((b * Math.PI) / 180);
+    const v = Fn * Math.sqrt(g * L);
+
+    const sew = sw.map(
+      (value, index) => value / (1 - (wSteps[index] * 2 * v * cosB) / g)
+    );
 
     await this.setState({ sw, sew });
+  };
+
+  readRaoInput = async input => {
+    const rao = input.map(({ rao }) => rao);
+
+    const w = input.map(({ w }) => w);
+
+    await this.setState({ rao, w, wSteps: w });
+
+    await this.init();
   };
 
   computeRao = async () => {

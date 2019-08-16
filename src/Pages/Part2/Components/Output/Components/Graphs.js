@@ -29,6 +29,7 @@ const Graphs = () => {
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Line connectNulls type="monotone" dataKey="sw" stroke="#8884d8" />
             <Line connectNulls type="monotone" dataKey="sew" stroke="#82ca9d" />
+            <Line connectNulls type="monotone" dataKey="srw" stroke="#c94d47" />
           </LineChart>
         </div>
       )}
@@ -38,8 +39,9 @@ const Graphs = () => {
 
 export default Graphs;
 
-const generateChartData = ({ wSteps, weSteps, sw, sew }) =>
+const generateChartData = ({ wSteps, weSteps, sw, sew, srw }) =>
   [
     ...wSteps.map((value, i) => ({ w: value.toFixed(3), sw: sw[i] })),
-    ...weSteps.map((value, i) => ({ w: value.toFixed(3), sew: sew[i] }))
+    ...weSteps.map((value, i) => ({ w: value.toFixed(3), sew: sew[i] })),
+    ...weSteps.map((value, i) => ({ w: value.toFixed(3), srw: srw[i] }))
   ].sort((a, b) => a.w - b.w);

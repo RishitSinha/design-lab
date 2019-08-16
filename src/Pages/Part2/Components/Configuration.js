@@ -1,9 +1,37 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button, Card, Col, InputNumber, Row } from "antd";
 import { Subscribe } from "unstated";
 import Part2Store from "../Store/Part2Store";
+import { useDropzone } from "react-dropzone";
+import withStore from "../../../Components/Unstated/withStore";
 
-const Configuration = () => {
+const Configuration = ({ part2Store: { readRaoInput } }) => {
+  const onDrop = useCallback(
+    acceptedFiles => {
+      console.log({ acceptedFiles });
+
+      const reader = new FileReader();
+      reader.onload = function(progressEvent) {
+        let lines = this.result.split("\n");
+
+        const data = [];
+        for (let line = 0; line < lines.length; line++) {
+          if (lines[line]) {
+            const [w, rao] = lines[line]
+              .split(" ")
+              .filter(value => value)
+              .map(value => parseFloat(value));
+            data.push({ w, rao });
+          }
+        }
+        readRaoInput(data);
+      };
+      reader.readAsText(acceptedFiles[0]);
+    },
+    [readRaoInput]
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   return (
     <Subscribe to={[Part2Store]}>
       {({ state: { config }, updateConfig, init }) => {
@@ -17,140 +45,18 @@ const Configuration = () => {
             </Row>
             <Row gutter={16}>
               <Col span={8}>
-                <Card title={"λ/L"}>
+                <Card title={"RAO"}>
                   <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-                    <Col span={6}>
-                      <h3>Start: </h3>
+                    <Col span={24}>
+                      <div {...getRootProps()}>
+                        <input style={{ width: "100%" }} {...getInputProps()} />
+                        {isDragActive ? (
+                          <p>Drop the files here ...</p>
+                        ) : (
+                          <p>Click to upload RAO file</p>
+                        )}
+                      </div>
                     </Col>
-                    <Col span={18}>
-                      <InputNumber
-                        value={config.lambdaByL.start}
-                        style={{ width: "100%" }}
-                        onChange={value =>
-                          updateConfig({
-                            ...config,
-                            lambdaByL: {
-                              ...config.lambdaByL,
-                              start: value
-                            }
-                          })
-                        }
-                      />
-                    </Col>
-                  </Row>
-                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-                    <Col span={6}>
-                      <h3>Max: </h3>
-                    </Col>
-                    <Col span={18}>
-                      <InputNumber
-                        value={config.lambdaByL.max}
-                        style={{ width: "100%" }}
-                        onChange={value =>
-                          updateConfig({
-                            ...config,
-                            lambdaByL: {
-                              ...config.lambdaByL,
-                              max: value
-                            }
-                          })
-                        }
-                      />
-                    </Col>
-                  </Row>
-                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-                    <Col span={6}>
-                      <h3>StepSize: </h3>
-                    </Col>
-                    <Col span={18}>
-                      <InputNumber
-                        value={config.lambdaByL.stepSize}
-                        style={{ width: "100%" }}
-                        onChange={value =>
-                          updateConfig({
-                            ...config,
-                            lambdaByL: {
-                              ...config.lambdaByL,
-                              stepSize: value
-                            }
-                          })
-                        }
-                      />
-                    </Col>
-                  </Row>
-                  <Row type="flex" justify="end" align="middle">
-                    <Button
-                      type={"primary"}
-                      onClick={() => init()}
-                      style={{ marginTop: 8 }}
-                    >
-                      Save
-                    </Button>
-                  </Row>
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card title={"w"}>
-                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-                    <Col span={6}>
-                      <h3>Start: </h3>
-                    </Col>
-                    <Col span={18}>
-                      <InputNumber
-                        disabled
-                        value={config.w.min}
-                        style={{ width: "100%" }}
-                      />
-                    </Col>
-                  </Row>
-                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-                    <Col span={6}>
-                      <h3>Max: </h3>
-                    </Col>
-                    <Col span={18}>
-                      <InputNumber
-                        value={config.w.max}
-                        style={{ width: "100%" }}
-                        onChange={value =>
-                          updateConfig({
-                            ...config,
-                            w: {
-                              ...config.w,
-                              max: value
-                            }
-                          })
-                        }
-                      />
-                    </Col>
-                  </Row>
-                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-                    <Col span={6}>
-                      <h3>StepSize: </h3>
-                    </Col>
-                    <Col span={18}>
-                      <InputNumber
-                        value={config.w.stepSize}
-                        style={{ width: "100%" }}
-                        onChange={value =>
-                          updateConfig({
-                            ...config,
-                            w: {
-                              ...config.w,
-                              stepSize: value
-                            }
-                          })
-                        }
-                      />
-                    </Col>
-                  </Row>
-                  <Row type="flex" justify="end" align="middle">
-                    <Button
-                      type={"primary"}
-                      onClick={() => init()}
-                      style={{ marginTop: 8 }}
-                    >
-                      Save
-                    </Button>
                   </Row>
                 </Card>
               </Col>
@@ -277,4 +183,4 @@ const Configuration = () => {
   );
 };
 
-export default Configuration;
+export default withStore([Part2Store])(Configuration);
