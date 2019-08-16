@@ -27,7 +27,9 @@ const initialState = () => ({
   wSteps: [],
   weSteps: [],
   sw: [],
-  sew: []
+  sew: [],
+  rao: [],
+  srw: []
 });
 
 export default class Part2Store extends Container {
@@ -49,6 +51,10 @@ export default class Part2Store extends Container {
     await this.computeWSteps();
 
     await this.computeSW();
+
+    await this.computeRao();
+
+    await this.computeSrWe();
   };
 
   computeLambdaByL = async () => {
@@ -105,7 +111,7 @@ export default class Part2Store extends Container {
         ...this.state.config,
         w: {
           ...this.state.config.w,
-          min: w_sorted[0],
+          min: w_sorted[0]
         }
       }
     });
@@ -119,20 +125,23 @@ export default class Part2Store extends Container {
         L,
         g,
         b
-      }
+      },
+      w
     } = this.state;
 
-    const wSteps = (() => {
-      let value = start;
-      let result = [];
+    // const wSteps = (() => {
+    //   let value = start;
+    //   let result = [];
+    //
+    //   while (value <= max) {
+    //     result.push(value);
+    //     value += stepSize;
+    //   }
+    //
+    //   return result;
+    // })();
 
-      while (value <= max) {
-        result.push(value);
-        value += stepSize;
-      }
-
-      return result;
-    })();
+    const wSteps = w;
 
     const cosB = Math.cos((b * Math.PI) / 180);
     const v = Fn * Math.sqrt(g * L);
@@ -163,9 +172,41 @@ export default class Part2Store extends Container {
     await this.setState({ sw, sew });
   };
 
+  computeRao = async () => {
+    await this.setState({
+      rao
+    });
+  };
+
+  computeSrWe = async () => {
+    const { rao, sew } = this.state;
+
+    const srw = sew.map((value, index) => value * rao[index]);
+
+    await this.setState({ srw });
+  };
+
   updateConfig = config => this.setState({ config });
 
   bindStore = store => {
     this.linkedStores[store.name] = store;
   };
 }
+
+const rao = [
+  0.130479499,
+  0.177688629,
+  0.725428995,
+  0.885213609,
+  1.031565086,
+  1.079622801,
+  1.089316397,
+  1.143157635,
+  1.161388366,
+  1.140122863,
+  1.132545503,
+  1.114350672,
+  1.089934069,
+  1.063594864,
+  1.042350095
+];

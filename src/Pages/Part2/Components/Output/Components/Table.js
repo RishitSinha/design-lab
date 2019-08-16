@@ -46,7 +46,9 @@ const generateTableDataStore1 = ({
   );
   return Array.from({ length: maxLength }).map((_, i) => {
     let obj = { L };
-    Object.keys(input).forEach(key => (obj[key] = input[key][i]));
+    Object.keys(input).forEach(
+      key => (obj[key] = (input[key][i] || 0).toFixed(6))
+    );
     return obj;
   });
 };
@@ -83,16 +85,20 @@ const generateTableDataStore2 = ({
   wSteps = [],
   weSteps = [],
   sw = [],
-  sew = []
+  sew = [],
+  rao = [],
+  srw = []
 }) => {
-  const input = { wSteps, weSteps, sw, sew };
+  const input = { wSteps, weSteps, sw, sew, rao, srw };
   const maxLength = Object.keys(input).reduce(
     (max, current) => Math.max(max, input[current].length),
     0
   );
   return Array.from({ length: maxLength }).map((_, i) => {
     let obj = {};
-    Object.keys(input).forEach(key => (obj[key] = input[key][i]));
+    Object.keys(input).forEach(
+      key => (obj[key] = (input[key][i] || 0).toFixed(6))
+    );
     return obj;
   });
 };
@@ -114,8 +120,18 @@ const tableColumns2 = [
     key: "weSteps"
   },
   {
-    title: "Se(w)",
+    title: "Se(we)",
     dataIndex: "sew",
     key: "sew"
+  },
+  {
+    title: "Rao",
+    dataIndex: "rao",
+    key: "rao"
+  },
+  {
+    title: "Sr(we)",
+    dataIndex: "srw",
+    key: "srw"
   }
 ];
