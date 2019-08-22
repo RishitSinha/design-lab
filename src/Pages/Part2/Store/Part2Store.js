@@ -1,5 +1,9 @@
 import { Container } from "unstated";
 import { roundToPrecision } from "../../../Helpers/Misc";
+import { linear } from "everpolate";
+import simpson from "integrate-simpson";
+
+window.simpson = simpson;
 
 const initialState = () => ({
   config: {
@@ -17,8 +21,8 @@ const initialState = () => ({
     Fn: 0.19,
     g: 9.81,
     b: 180,
-    t1: 6.9,
-    h1By3: 6.9
+    t1: 10,
+    h1By3: 4
   },
   lambdaByL: [],
   lambda: [],
@@ -60,9 +64,15 @@ export default class Part2Store extends Container {
 
     await this.computeSW();
 
-    await this.computeRao();
-
     await this.computeSrWe();
+
+    const { sew, srw, sw } = this.state;
+
+    console.log({
+      sew: this.getArea(sew, "weSteps"),
+      srw: this.getArea(srw, "weSteps"),
+      sw: this.getArea(sw)
+    });
   };
 
   computeLambdaByL = async () => {
@@ -170,7 +180,9 @@ export default class Part2Store extends Container {
     const sw = wSteps.map(value => {
       const wt1By2PI = (value * t1) / (2 * Math.PI);
       return (
-        Math.pow(h1By3 / t1, 2) *
+        (0.11 / (2 * Math.PI)) *
+        Math.pow(h1By3, 2) *
+        t1 *
         Math.pow(wt1By2PI, -5) *
         Math.exp(-0.44 * Math.pow(wt1By2PI, -4))
       );
@@ -179,6 +191,8 @@ export default class Part2Store extends Container {
     const cosB = Math.cos((b * Math.PI) / 180);
     const v = Fn * Math.sqrt(g * L);
 
+    console.log("------------------------");
+    console.log({ sw: sw.map(val => roundToPrecision(val, 0.0001)), wSteps });
     const sew = sw.map(
       (value, index) => value / (1 - (wSteps[index] * 2 * v * cosB) / g)
     );
@@ -186,20 +200,23 @@ export default class Part2Store extends Container {
     await this.setState({ sw, sew });
   };
 
-  readRaoInput = async input => {
+  readRaoInput = async rawInput => {
+    const input = rawInput.sort((a, b) => a.w - b.w);
     const rao = input.map(({ rao }) => rao);
 
     const w = input.map(({ w }) => w);
 
-    await this.setState({ rao, w, wSteps: w });
+    const inputW = Array.from({ length: 750 }).map((_, i) => i * 0.002);
+
+    // const interpolatedRao = polynomial(inputW, w, rao);
+    const interpolatedRao = linear(inputW, w, rao);
+
+    console.log({ interpolatedRao, rao, w });
+
+    // await this.setState({ rao, w, wSteps: w });
+    await this.setState({ rao: interpolatedRao, w: inputW, wSteps: inputW });
 
     await this.init();
-  };
-
-  computeRao = async () => {
-    await this.setState({
-      rao
-    });
   };
 
   computeSrWe = async () => {
@@ -207,7 +224,39 @@ export default class Part2Store extends Container {
 
     const srw = sew.map((value, index) => value * rao[index]);
 
+    console.log({ srw, sew, rao });
     await this.setState({ srw });
+  };
+
+  getArea = (curve, ref = "wSteps") => {
+    const { wSteps, weSteps } = this.state;
+
+    // const getPoint = value =>
+    //   curve[wSteps.findIndex(test => value === test)] || 0;
+    //
+    // const area = simpson(
+    //   getPoint,
+    //   wSteps[0],
+    //   wSteps.slice(-1)[0],
+    //   wSteps[1] - wSteps[0]
+    // );
+
+    const refs = {
+      wSteps,
+      weSteps
+    };
+
+    console.log({ wSteps, weSteps });
+
+    const area = curve.reduce((sum, current, index, self) => {
+      const x1 = roundToPrecision(current || 0, 0.0001);
+      const x2 = roundToPrecision(self[index + 1] || 0, 0.0001);
+      const y = refs[ref][index + 1] - refs[ref][index];
+      // console.log({ sum });
+      return index !== self.length - 1 ? sum + ((x1 + x2) * y) / 2 : sum;
+    }, 0);
+
+    return roundToPrecision(area, 0.0001).toFixed(4);
   };
 
   updateConfig = config => this.setState({ config });
@@ -216,21 +265,3 @@ export default class Part2Store extends Container {
     this.linkedStores[store.name] = store;
   };
 }
-
-const rao = [
-  0.130479499,
-  0.177688629,
-  0.725428995,
-  0.885213609,
-  1.031565086,
-  1.079622801,
-  1.089316397,
-  1.143157635,
-  1.161388366,
-  1.140122863,
-  1.132545503,
-  1.114350672,
-  1.089934069,
-  1.063594864,
-  1.042350095
-];

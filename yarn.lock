@@ -4452,6 +4452,11 @@ eventsource@^1.0.7:
   dependencies:
     original "^1.0.0"
 
+everpolate@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/everpolate/-/everpolate-0.0.3.tgz#3b1b318465494712aa1eb106144468ea417d0129"
+  integrity sha1-OxsxhGVJRxKqHrEGFERo6kF9ASk=
+
 evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/evp_bytestokey/-/evp_bytestokey-1.0.3.tgz#7fcbdb198dc71959432efe13842684e0525acb02"
@@ -5592,6 +5597,11 @@ inquirer@^6.2.2:
     string-width "^2.1.0"
     strip-ansi "^5.1.0"
     through "^2.3.6"
+
+integrate-simpson@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/integrate-simpson/-/integrate-simpson-1.0.4.tgz#d8b7bd6f31ee9bd07c73d44d10cbe77d5390e9a9"
+  integrity sha1-2Le9bzHum9B8c9RNEMvnfVOQ6ak=
 
 internal-ip@^4.2.0:
   version "4.3.0"
