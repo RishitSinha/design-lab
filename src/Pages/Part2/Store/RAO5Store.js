@@ -42,8 +42,8 @@ const initialState = () => ({
   }
 });
 
-export default class Part2Store extends Container {
-  name = "Part2Store";
+export default class RAO5Store extends Container {
+  name = "RAO5Store";
 
   state = initialState();
 

@@ -3,7 +3,7 @@ import { Card, Col, Row, Switch } from "antd";
 import Graphs from "./Components/Graphs";
 import Table from "./Components/Table";
 
-const Output = () => {
+const OutputRAO5 = () => {
   const [showGraphs, toggleGraphs] = useState(false);
   return (
     <div className="output" style={{ marginTop: 32 }}>
@@ -12,7 +12,7 @@ const Output = () => {
           <Card>
             <Row gutter={16}>
               <Col span={20}>
-                <h2>Results: RAO3</h2>
+                <h2>Results: RAO5</h2>
               </Col>
               <Col span={2}>
                 <h3 style={{ textAlign: "right" }}>View Mode</h3>
@@ -34,4 +34,4 @@ const Output = () => {
   );
 };
 
-export default Output;
+export default OutputRAO5;

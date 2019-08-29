@@ -1,11 +1,15 @@
 import React, { useCallback } from "react";
 import { Button, Card, Col, InputNumber, Row } from "antd";
 import { Subscribe } from "unstated";
-import Part2Store from "../Store/Part2Store";
+import RAO3Store from "../Store/RAO3Store";
 import { useDropzone } from "react-dropzone";
 import withStore from "../../../Components/Unstated/withStore";
+import RAO5Store from "../Store/RAO5Store";
 
-const Configuration = ({ part2Store: { readRaoInput } }) => {
+const Configuration = ({
+  rAO3Store: { readRaoInput: RAO3Input },
+  rAO5Store: { readRaoInput: RAO5Input }
+}) => {
   const onDrop = useCallback(
     acceptedFiles => {
       console.log({ acceptedFiles });
@@ -24,16 +28,19 @@ const Configuration = ({ part2Store: { readRaoInput } }) => {
             data.push({ w, rao });
           }
         }
-        readRaoInput(data);
+
+        acceptedFiles[0].name.toLowerCase().includes("rao5")
+          ? RAO5Input(data)
+          : RAO3Input(data);
       };
       reader.readAsText(acceptedFiles[0]);
     },
-    [readRaoInput]
+    [RAO3Input, RAO5Input]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <Subscribe to={[Part2Store]}>
+    <Subscribe to={[RAO3Store]}>
       {({ state: { config }, updateConfig, init }) => {
         return (
           <div className="configuration">
@@ -52,7 +59,19 @@ const Configuration = ({ part2Store: { readRaoInput } }) => {
                         {isDragActive ? (
                           <p>Drop the files here ...</p>
                         ) : (
-                          <p>Click to upload RAO file</p>
+                          <p>Click to upload RAO3 file</p>
+                        )}
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={24}>
+                      <div {...getRootProps()}>
+                        <input style={{ width: "100%" }} {...getInputProps()} />
+                        {isDragActive ? (
+                          <p>Drop the files here ...</p>
+                        ) : (
+                          <p>Click to upload RAO5 file</p>
                         )}
                       </div>
                     </Col>
@@ -182,4 +201,4 @@ const Configuration = ({ part2Store: { readRaoInput } }) => {
   );
 };
 
-export default withStore([Part2Store])(Configuration);
+export default withStore([RAO3Store, RAO5Store])(Configuration);

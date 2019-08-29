@@ -1,20 +1,27 @@
 import React, { useEffect } from "react";
 import Configuration from "./Components/Configuration";
 import withStore from "../../Components/Unstated/withStore";
-import Part2Store from "./Store/Part2Store";
+import RAO3Store from "./Store/RAO3Store";
 import Output from "./Components/Output";
+import RAO5Store from "./Store/RAO5Store";
+import OutputRAO5 from "./Components/OutputRAO5";
 
-const Part2 = ({ part2Store: { init } }) => {
+const Part2 = ({
+  rAO3Store: { init: initRAO3 },
+  rAO5Store: { init: initRAO5 }
+}) => {
   useEffect(() => {
-    init();
-  }, [init]);
+    initRAO3();
+    initRAO5();
+  }, [initRAO3, initRAO5]);
 
   return (
     <div className="part2">
       <Configuration />
-      <Output/>
+      <Output />
+      <OutputRAO5 />
     </div>
   );
 };
 
-export default withStore([Part2Store])(Part2);
+export default withStore([RAO3Store, RAO5Store])(Part2);
