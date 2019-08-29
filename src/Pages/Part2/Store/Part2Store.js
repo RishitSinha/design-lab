@@ -33,7 +33,13 @@ const initialState = () => ({
   sw: [],
   sew: [],
   rao: [],
-  srw: []
+  srw: [],
+  moments: {
+    sw: 0,
+    sew: 0,
+    srw: 0,
+    m2: 0
+  }
 });
 
 export default class Part2Store extends Container {
@@ -47,7 +53,6 @@ export default class Part2Store extends Container {
     console.log("init called");
     const { w, rao, wSteps } = this.state;
 
-    console.log({ w, rao, wSteps });
     if (!w.length || !rao.length || !wSteps.length) {
       return;
     }
@@ -66,13 +71,7 @@ export default class Part2Store extends Container {
 
     await this.computeSrWe();
 
-    const { sew, srw, sw } = this.state;
-
-    console.log({
-      sew: this.getArea(sew, "weSteps"),
-      srw: this.getArea(srw, "weSteps"),
-      sw: this.getArea(sw)
-    });
+    await this.computeMoments();
   };
 
   computeLambdaByL = async () => {
@@ -191,8 +190,6 @@ export default class Part2Store extends Container {
     const cosB = Math.cos((b * Math.PI) / 180);
     const v = Fn * Math.sqrt(g * L);
 
-    console.log("------------------------");
-    console.log({ sw: sw.map(val => roundToPrecision(val, 0.0001)), wSteps });
     const sew = sw.map(
       (value, index) => value / (1 - (wSteps[index] * 2 * v * cosB) / g)
     );
@@ -211,8 +208,6 @@ export default class Part2Store extends Container {
     // const interpolatedRao = polynomial(inputW, w, rao);
     const interpolatedRao = linear(inputW, w, rao);
 
-    console.log({ interpolatedRao, rao, w });
-
     // await this.setState({ rao, w, wSteps: w });
     await this.setState({ rao: interpolatedRao, w: inputW, wSteps: inputW });
 
@@ -222,44 +217,64 @@ export default class Part2Store extends Container {
   computeSrWe = async () => {
     const { rao, sew } = this.state;
 
-    const srw = sew.map((value, index) => value * rao[index]);
+    const srw = sew.map((value, index) => value * rao[index] * rao[index]);
 
-    console.log({ srw, sew, rao });
     await this.setState({ srw });
   };
 
   getArea = (curve, ref = "wSteps") => {
     const { wSteps, weSteps } = this.state;
 
-    // const getPoint = value =>
-    //   curve[wSteps.findIndex(test => value === test)] || 0;
-    //
-    // const area = simpson(
-    //   getPoint,
-    //   wSteps[0],
-    //   wSteps.slice(-1)[0],
-    //   wSteps[1] - wSteps[0]
-    // );
-
     const refs = {
       wSteps,
       weSteps
     };
 
-    console.log({ wSteps, weSteps });
-
     const area = curve.reduce((sum, current, index, self) => {
       const x1 = roundToPrecision(current || 0, 0.0001);
       const x2 = roundToPrecision(self[index + 1] || 0, 0.0001);
       const y = refs[ref][index + 1] - refs[ref][index];
-      // console.log({ sum });
       return index !== self.length - 1 ? sum + ((x1 + x2) * y) / 2 : sum;
     }, 0);
 
     return roundToPrecision(area, 0.0001).toFixed(4);
   };
 
+  getMoment = (curve, ref = "wSteps", k = 0) => {
+    const { wSteps, weSteps } = this.state;
+
+    const refs = {
+      wSteps,
+      weSteps
+    };
+
+    const area = curve.reduce((sum, current, index, self) => {
+      const x1 = roundToPrecision(current || 0, 0.0001);
+      const x2 = roundToPrecision(self[index + 1] || 0, 0.0001);
+      const y = refs[ref][index + 1] - refs[ref][index];
+
+      return index !== self.length - 1
+        ? sum + (Math.pow(refs[ref][index], k) * ((x1 + x2) * y)) / 2
+        : sum;
+    }, 0);
+
+    return roundToPrecision(area, 0.0001).toFixed(4);
+  };
+
   updateConfig = config => this.setState({ config });
+
+  computeMoments = async () => {
+    const { sew, srw, sw } = this.state;
+
+    await this.setState({
+      moments: {
+        sew: this.getMoment(sew, "weSteps"),
+        srw: this.getMoment(srw, "weSteps"),
+        sw: this.getMoment(sw),
+        m2: this.getMoment(sw, "wSteps", 2)
+      }
+    });
+  };
 
   bindStore = store => {
     this.linkedStores[store.name] = store;

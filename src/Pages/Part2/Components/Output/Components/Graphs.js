@@ -1,13 +1,5 @@
 import React, { useRef } from "react";
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Subscribe } from "unstated";
 import Part2Store from "../../../Store/Part2Store";
 import { roundToPrecision } from "../../../../../Helpers/Misc";
@@ -17,7 +9,6 @@ const Graphs = () => {
   return (
     <Subscribe to={[Part2Store]}>
       {({ state }) => {
-        console.log({ state, data: generateChartData(state) });
         return (
           <div className="graphs" style={{ margin: "0 10%" }} ref={parent}>
             <LineChart
@@ -42,6 +33,17 @@ const Graphs = () => {
                 dataKey="sew"
                 stroke="#82ca9d"
               />
+            </LineChart>
+            <LineChart
+              width={window.innerWidth * 0.75}
+              height={(window.innerWidth * 0.75) / 1.75}
+              data={generateChartData(state)}
+            >
+              <XAxis dataKey="w" />
+              <YAxis />
+              {/*<Tooltip />*/}
+              <Legend />
+              <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
               <Line
                 connectNulls
                 type="monotone"

@@ -1,13 +1,113 @@
 import React from "react";
-import { Col, Row, Table as TableComponent } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  InputNumber,
+  Row,
+  Table as TableComponent
+} from "antd";
 import { Subscribe } from "unstated";
 import Part2Store from "../../../Store/Part2Store";
 
 const Table = () => {
   return (
     <Subscribe to={[Part2Store]}>
-      {({ state }) => (
+      {({ state, init }) => (
         <div className="table">
+          <div className="moments">
+            <Row style={{ marginBottom: 8 }}>
+              <Col span={24}>
+                <Card>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
+                      <h3>Area S(w): </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        disabled
+                        value={state.moments.sw}
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
+                      <h3>Area Se(we): </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        disabled
+                        value={state.moments.sew}
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
+                      <h3>Area Sr(we): </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        disabled
+                        value={state.moments.srw}
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
+                      <h3>m2: </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        disabled
+                        value={state.moments.m2}
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
+                      <h3>Computed T: </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        disabled
+                        value={
+                          2 *
+                          Math.PI *
+                          Math.sqrt(state.moments.sw / state.moments.m2)
+                        }
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
+                      <h3>Computed H1/3: </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        disabled
+                        value={4 * Math.sqrt(state.moments.sw)}
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" justify="end" align="middle">
+                    <Button
+                      type={"primary"}
+                      onClick={() => init()}
+                      style={{ marginTop: 8 }}
+                    >
+                      Save
+                    </Button>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
+          </div>
           <Row>
             <Col span={24}>
               <TableComponent

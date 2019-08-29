@@ -35,7 +35,6 @@ const Configuration = ({ part2Store: { readRaoInput } }) => {
   return (
     <Subscribe to={[Part2Store]}>
       {({ state: { config }, updateConfig, init }) => {
-        // console.log({ config });
         return (
           <div className="configuration">
             <Row>
