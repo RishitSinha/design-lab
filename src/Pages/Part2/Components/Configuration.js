@@ -40,8 +40,19 @@ const Configuration = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <Subscribe to={[RAO3Store]}>
-      {({ state: { config }, updateConfig, init }) => {
+    <Subscribe to={[RAO3Store, RAO5Store]}>
+      {(
+        { state: { config }, updateConfig: u1, init: i1 },
+        { updateConfig: u2, init: i2 }
+      ) => {
+        const init = args => {
+          i1(args);
+          i2(args);
+        };
+        const updateConfig = args => {
+          u1(args);
+          u2(args);
+        };
         return (
           <div className="configuration">
             <Row>

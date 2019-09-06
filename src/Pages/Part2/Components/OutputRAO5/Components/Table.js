@@ -18,7 +18,7 @@ const Table = () => {
                     </Col>
                     <Col span={18}>
                       <InputNumber
-                        disabled
+                        contentEditable={false}
                         value={state.moments.sw}
                         style={{ width: "100%" }}
                       />
@@ -30,7 +30,7 @@ const Table = () => {
                     </Col>
                     <Col span={18}>
                       <InputNumber
-                        disabled
+                        contentEditable={false}
                         value={state.moments.sew}
                         style={{ width: "100%" }}
                       />
@@ -42,7 +42,7 @@ const Table = () => {
                     </Col>
                     <Col span={18}>
                       <InputNumber
-                        disabled
+                        contentEditable={false}
                         value={state.moments.srw}
                         style={{ width: "100%" }}
                       />
@@ -54,7 +54,7 @@ const Table = () => {
                     </Col>
                     <Col span={18}>
                       <InputNumber
-                        disabled
+                        contentEditable={false}
                         value={state.moments.m2}
                         style={{ width: "100%" }}
                       />
@@ -66,7 +66,7 @@ const Table = () => {
                     </Col>
                     <Col span={18}>
                       <InputNumber
-                        disabled
+                        contentEditable={false}
                         value={
                           2 *
                           Math.PI *
@@ -82,7 +82,7 @@ const Table = () => {
                     </Col>
                     <Col span={18}>
                       <InputNumber
-                        disabled
+                        contentEditable={false}
                         value={4 * Math.sqrt(state.moments.sw)}
                         style={{ width: "100%" }}
                       />

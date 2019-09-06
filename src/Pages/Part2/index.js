@@ -5,6 +5,11 @@ import RAO3Store from "./Store/RAO3Store";
 import Output from "./Components/Output";
 import RAO5Store from "./Store/RAO5Store";
 import OutputRAO5 from "./Components/OutputRAO5";
+import OutputNew from "./Components/OutputNew";
+import { Tabs } from "antd";
+import { Sticky, StickyContainer } from "react-sticky";
+
+const { TabPane } = Tabs;
 
 const Part2 = ({
   rAO3Store: { init: initRAO3 },
@@ -18,10 +23,32 @@ const Part2 = ({
   return (
     <div className="part2">
       <Configuration />
-      <Output />
-      <OutputRAO5 />
+      <StickyContainer>
+        <Tabs style={{ marginTop: 32 }} renderTabBar={renderTabBar}>
+          <TabPane tab={"Output RAO3"} key={"tab" + 1}>
+            <Output />
+          </TabPane>
+          <TabPane tab={"Output RAO5"} key={"tab" + 2}>
+            <OutputRAO5 />
+          </TabPane>
+          <TabPane tab={"Deck Wetness"} key={"tab" + 3}>
+            <OutputNew />
+          </TabPane>
+        </Tabs>
+      </StickyContainer>
     </div>
   );
 };
 
 export default withStore([RAO3Store, RAO5Store])(Part2);
+
+const renderTabBar = (props, DefaultTabBar) => (
+  <Sticky>
+    {({ style }) => (
+      <DefaultTabBar
+        {...props}
+        style={{ ...style, zIndex: 1, background: "#fff" }}
+      />
+    )}
+  </Sticky>
+);
