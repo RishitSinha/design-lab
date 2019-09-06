@@ -174,8 +174,8 @@ const OutputNew = ({
       <Graphs
         data={{
           wSteps: rao3.wSteps,
-          srw: tableData.srw_vbm,
-          z: z
+          srw: tableData.srw_vbm.map(val => Math.abs(val)),
+          z: z.map(val => Math.abs(val))
         }}
       />
     </div>
