@@ -4,6 +4,7 @@ import { roundToPrecision } from "../../../../../Helpers/Misc";
 
 const Graphs = ({ data }) => {
   const parent = useRef(null);
+  console.log({ z: data.z });
   return (
     <div className="graphs" style={{ margin: "0 10%" }} ref={parent}>
       <LineChart
