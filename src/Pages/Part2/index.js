@@ -8,6 +8,7 @@ import OutputRAO5 from "./Components/OutputRAO5";
 import OutputNew from "./Components/OutputNew";
 import { Tabs } from "antd";
 import { Sticky, StickyContainer } from "react-sticky";
+import OutputSlamming from "./Components/OutputSlamming";
 
 const { TabPane } = Tabs;
 
@@ -33,6 +34,9 @@ const Part2 = ({
           </TabPane>
           <TabPane tab={"Deck Wetness"} key={"tab" + 3}>
             <OutputNew />
+          </TabPane>
+          <TabPane tab={"Slamming"} key={"tab" + 4}>
+            <OutputSlamming />
           </TabPane>
         </Tabs>
       </StickyContainer>

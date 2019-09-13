@@ -3,13 +3,15 @@ import withStore from "../../../../Components/Unstated/withStore";
 import RAO3Store from "../../Store/RAO3Store";
 import RAO5Store from "../../Store/RAO5Store";
 import { roundToPrecision } from "../../../../Helpers/Misc";
-import { Card, Col, InputNumber, Row } from "antd";
 import Graphs from "./Components/Graphs";
+import Table from "./Components/Table";
+import { Card, Col, Row, Switch } from "antd";
 
 const OutputNew = ({
   rAO3Store: { state: rao3 },
   rAO5Store: { state: rao5 }
 }) => {
+  const [showGraphs, toggleGraphs] = useState(false);
   const [prob, updateProb] = useState({ prob: 0, n1hour: 0 });
   const [tz, updateTz] = useState(0);
   const [h1By3z, updateH1By3z] = useState(0);
@@ -23,10 +25,8 @@ const OutputNew = ({
   const [z, updateZ] = useState([]);
 
   useEffect(() => {
-    const freeboard = 5;
-
     const {
-      config: { L }
+      config: { L, f: freeboard }
     } = rao3;
     const xp = L / 2 - 1;
 
@@ -72,8 +72,11 @@ const OutputNew = ({
     updateZ(z);
 
     const [m0z, m2z] = [
-      area(rao3.sw, z),
-      area(rao3.sw, z.map((val, i) => val * rao3.wSteps[i] * rao3.wSteps[i]))
+      area(rao3.wSteps, z),
+      area(
+        rao3.wSteps,
+        z.map((val, i) => val * rao3.wSteps[i] * rao3.wSteps[i])
+      )
     ];
 
     console.log({ m0z, m2z });
@@ -88,7 +91,7 @@ const OutputNew = ({
     updateH1By3z(H1By3);
 
     const prob = Math.exp((-1 * freeboard) / (2 * m0z));
-    const n1hour = (3600 * prob) / Tz;
+    const n1hour = Math.floor((3600 * prob) / Tz);
 
     console.log({ prob, n1hour });
     updateProb({ prob, n1hour });
@@ -96,88 +99,54 @@ const OutputNew = ({
 
   return (
     <div className="outputNew">
-      <Card>
-        <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-          <Col span={6}>
-            <h3>m0z: </h3>
-          </Col>
-          <Col span={18}>
-            <InputNumber
-              contentEditable={false}
-              value={m0z}
-              style={{ width: "100%", pointerEvents: "none" }}
-            />
-          </Col>
-        </Row>
-        <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-          <Col span={6}>
-            <h3>m2z: </h3>
-          </Col>
-          <Col span={18}>
-            <InputNumber
-              contentEditable={false}
-              value={m2z}
-              style={{ width: "100%", pointerEvents: "none" }}
-            />
-          </Col>
-        </Row>
-        <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-          <Col span={6}>
-            <h3>Tz: </h3>
-          </Col>
-          <Col span={18}>
-            <InputNumber
-              contentEditable={false}
-              value={tz}
-              style={{ width: "100%", pointerEvents: "none" }}
-            />
-          </Col>
-        </Row>
-        <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-          <Col span={6}>
-            <h3>H1By3z: </h3>
-          </Col>
-          <Col span={18}>
-            <InputNumber
-              contentEditable={false}
-              value={h1By3z}
-              style={{ width: "100%", pointerEvents: "none" }}
-            />
-          </Col>
-        </Row>
-        <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-          <Col span={6}>
-            <h3>Prob: </h3>
-          </Col>
-          <Col span={18}>
-            <InputNumber
-              contentEditable={false}
-              value={prob.prob}
-              style={{ width: "100%", pointerEvents: "none" }}
-            />
-          </Col>
-        </Row>
-        <Row type="flex" align="middle" style={{ marginTop: 8 }}>
-          <Col span={6}>
-            <h3>N1Hour: </h3>
-          </Col>
-          <Col span={18}>
-            <InputNumber
-              contentEditable={false}
-              value={prob.n1hour}
-              style={{ width: "100%", pointerEvents: "none" }}
-            />
-          </Col>
-        </Row>
-      </Card>
-
-      <Graphs
-        data={{
-          wSteps: rao3.wSteps,
-          srw: tableData.srw_vbm.map(val => Math.abs(val)),
-          z: z.map(val => Math.abs(val))
-        }}
-      />
+      <Row>
+        <Col span={24}>
+          <Card>
+            <Row gutter={16}>
+              <Col span={20}>
+                <h2>Results: Deck Wetness</h2>
+              </Col>
+              <Col span={2}>
+                <h3 style={{ textAlign: "right" }}>View Mode</h3>
+              </Col>
+              <Col span={2}>
+                <Switch
+                  checkedChildren="Graphs"
+                  unCheckedChildren="Table"
+                  checked={showGraphs}
+                  onChange={value => toggleGraphs(value)}
+                />
+              </Col>
+            </Row>
+            <Row>
+              {showGraphs ? (
+                <Graphs
+                  data={{
+                    wSteps: rao3.wSteps,
+                    srw: tableData.srw_vbm.map(val => Math.abs(val)),
+                    z: z.map(val => Math.abs(val))
+                  }}
+                />
+              ) : (
+                <Table
+                  data={{
+                    ...tableData,
+                    rao3: rao3.rao,
+                    rao5: rao5.rao,
+                    z,
+                    wSteps: rao3.wSteps
+                  }}
+                  m0z={m0z}
+                  m2z={m2z}
+                  tz={tz}
+                  prob={prob}
+                  h1By3z={h1By3z}
+                />
+              )}
+            </Row>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

@@ -13,6 +13,8 @@ const initialState = () => ({
       max: 4
     },
     L: 100,
+    f: 1,
+    t: 3,
     w: {
       min: 0,
       max: 2,
@@ -21,8 +23,8 @@ const initialState = () => ({
     Fn: 0.19,
     g: 9.81,
     b: 180,
-    t1: 10,
-    h1By3: 4
+    t1: 12,
+    h1By3: 16
   },
   lambdaByL: [],
   lambda: [],

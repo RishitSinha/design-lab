@@ -110,6 +110,40 @@ const Configuration = ({
                   </Row>
                   <Row type="flex" align="middle" style={{ marginTop: 8 }}>
                     <Col span={6}>
+                      <h3>f: </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        onChange={value =>
+                          updateConfig({
+                            ...config,
+                            f: value
+                          })
+                        }
+                        value={config.f}
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
+                      <h3>Draft: </h3>
+                    </Col>
+                    <Col span={18}>
+                      <InputNumber
+                        onChange={value =>
+                          updateConfig({
+                            ...config,
+                            t: value
+                          })
+                        }
+                        value={config.t}
+                        style={{ width: "100%" }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row type="flex" align="middle" style={{ marginTop: 8 }}>
+                    <Col span={6}>
                       <h3>Fn: </h3>
                     </Col>
                     <Col span={18}>
