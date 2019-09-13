@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import Configuration from "./Components/Configuration";
 import withStore from "../../Components/Unstated/withStore";
 import RAO3Store from "./Store/RAO3Store";
-import Output from "./Components/Output";
+import Output from "./Components/Heave";
 import RAO5Store from "./Store/RAO5Store";
-import OutputRAO5 from "./Components/OutputRAO5";
-import OutputNew from "./Components/OutputNew";
+import OutputRAO5 from "./Components/Pitch";
+import OutputNew from "./Components/Wetness";
 import { Tabs } from "antd";
 import { Sticky, StickyContainer } from "react-sticky";
-import OutputSlamming from "./Components/OutputSlamming";
+import OutputSlamming from "./Components/Slamming";
 
 const { TabPane } = Tabs;
 
